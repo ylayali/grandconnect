@@ -10,5 +10,9 @@
   },
   "compatibility_flags": [
     "nodejs_compat"
-  ]
+  ],
+  "assets": {
+    "directory": ".next",
+    "binding": "ASSETS"
+  }
 }
