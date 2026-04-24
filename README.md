@@ -302,4 +302,4 @@ Proprietary - All rights reserved
 
 ---
 
-Built with ❤️ for grandparents and grandchildren everywhere.
+Built with ❤️ for grandparents and grandchildren everywhere.# grandconnect
