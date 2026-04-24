@@ -2,20 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import webpush from 'web-push';
 
-// Configure web-push
-const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || '';
-const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY || '';
-
-if (!vapidPublicKey || !vapidPrivateKey) {
-  console.warn('VAPID keys not configured. Push notifications will not work.');
-} else {
-  webpush.setVapidDetails(
-    `mailto:${process.env.VAPID_EMAIL || 'noreply@farawaygrandparents.com'}`,
-    vapidPublicKey,
-    vapidPrivateKey
-  );
-}
-
 interface NotificationPayload {
   familyMemberId: string;
   title: string;
@@ -26,6 +12,21 @@ interface NotificationPayload {
 
 export async function POST(request: NextRequest) {
   try {
+    // Configure web-push inside the handler (not at module level)
+    // This prevents build-time errors when env vars aren't available
+    const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || '';
+    const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY || '';
+
+    if (!vapidPublicKey || !vapidPrivateKey) {
+      console.warn('VAPID keys not configured. Push notifications will not work.');
+    } else {
+      webpush.setVapidDetails(
+        `mailto:${process.env.VAPID_EMAIL || 'noreply@farawaygrandparents.com'}`,
+        vapidPublicKey,
+        vapidPrivateKey
+      );
+    }
+
     const { familyMemberId, title, body, image, data }: NotificationPayload = await request.json();
 
     if (!familyMemberId || !title || !body) {
